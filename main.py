@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
+from app.schema.tasks import TaskCreate, TaskUpdate
 
 app = FastAPI()
 
@@ -16,14 +17,15 @@ def check_health():
 
 
 @app.post("/tasks")
-def create_a_task(task: dict):
+def create_a_task(task: TaskCreate):
 
+    new_task = task.model_dump()
     task_id = len(tasks) + 1
-    task["task_id"] = task_id
+    new_task["task_id"] = task_id
 
-    tasks.append(task)
+    tasks.append(new_task)
 
-    return task
+    return new_task
 
 
 @app.get("/tasks")
@@ -52,13 +54,13 @@ def get_task_by_id(task_id: int):
 @app.patch("/tasks/{task_id}")
 def update_task(
     task_id: int,
-    task_dict: dict,
+    dict_input: TaskUpdate,
 ):
-
+    task_dict = dict_input.model_dump(exclude_unset=True)
     if "title" not in task_dict:
         raise (
             HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail="Title field required",
             )
         )
@@ -78,3 +80,24 @@ def update_task(
         )
 
     return updated_task
+
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int):
+
+    deleted_task = None
+
+    for task in tasks:
+        if task["task_id"] == task_id:
+            deleted_task = task
+            tasks.remove(deleted_task)
+            break
+
+    if deleted_task is None:
+        raise (
+            HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+            )
+        )
+
+    return {"message": "Task deleted successfully"}
