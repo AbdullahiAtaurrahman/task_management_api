@@ -54,33 +54,25 @@ def get_task_by_id(task_id: int):
 @app.patch("/tasks/{task_id}")
 def update_task(
     task_id: int,
-    dict_input: TaskUpdate,
+    data_input: TaskUpdate,
 ):
-    task_dict = dict_input.model_dump(exclude_unset=True)
-    if "title" not in task_dict:
-        raise (
-            HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                detail="Title field required",
-            )
-        )
+    task_dict = data_input.model_dump(exclude_unset=True)
     updated_task = None
+    task_found = None
 
-    for task in tasks:
-        if task["task_id"] == task_id:
-            task["title"] = task_dict["title"]
-            updated_task = task
-            break
+    for key in task_dict:
 
-    if updated_task is None:
-        raise (
-            HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        if key == task_dict:
+
+
+        if key is not task_id:
+            raise (
+                HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+                )
             )
-        )
-
+        
     return updated_task
-
 
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
