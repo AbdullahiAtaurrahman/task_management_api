@@ -9,7 +9,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
 )
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 
 class Task(Base):
@@ -27,3 +27,5 @@ class Task(Base):
     user_id: Mapped[int] = mapped_column(
         ForeignKey("users.id"), nullable=False, index=True
     )
+
+    user: Mapped["User"] = relationship(back_populates="tasks")
