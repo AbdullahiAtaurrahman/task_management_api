@@ -13,3 +13,11 @@ class TaskUpdate(BaseModel):
     description: str | None = None
     priority: str | None = None
     completed: bool | None = None
+
+
+class TaskResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    priority: str
+    completed: bool
