@@ -8,23 +8,23 @@ class TaskRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def get_all_tasks(self):
-        statement = select(Task)
+    async def get_all_tasks(self, user_id: int):
+        statement = select(Task).where(Task.user_id == user_id)
 
         result = await self.db.execute(statement)
         tasks = result.scalars().all()
         return tasks
 
-    async def get_task_by_id(self, task_id: int):
+    async def get_task_by_id(self, task_id: int, user_id: int):
 
-        statement = select(Task).where(Task.id == task_id)
+        statement = select(Task).where(Task.id == task_id, Task.user_id == user_id)
 
         result = await self.db.execute(statement)
 
         task = result.scalar_one_or_none()
         return task
 
-    async def create_task(self, task_data: dict, user_id: int):
+    async def create_task(self, user_id: int, task_data: dict):
         task = Task(**task_data, user_id=user_id)
 
         self.db.add(task)
@@ -33,8 +33,8 @@ class TaskRepository:
 
         return task
 
-    async def update_task(self, task_id: int, task_data: dict):
-        task = await self.get_task_by_id(task_id)
+    async def update_task(self, task_id: int, task_data: dict, user_id: int):
+        task = await self.get_task_by_id(task_id, user_id)
         if task is None:
             return None
 
@@ -46,8 +46,8 @@ class TaskRepository:
 
         return task
 
-    async def delete_task(self, task_id: int):
-        task = await self.get_task_by_id(task_id)
+    async def delete_task(self, task_id: int, user_id: int):
+        task = await self.get_task_by_id(task_id, user_id)
 
         if task is None:
             return False

@@ -1,0 +1,11 @@
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+Active.ps1
+
+# Environment Variables and Secrets (CRITICAL)
+.env
+.env.*
+!.env.example
