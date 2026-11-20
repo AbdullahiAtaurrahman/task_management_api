@@ -17,3 +17,9 @@ def get_task_service(
     repository: TaskRepository = Depends(get_task_repository),
 ):
     return TaskService(repository)
+
+
+def get_current_user(
+    repository: TaskRepository = Depends(get_task_repository),
+):
+    return TaskService(repository)
