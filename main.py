@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, status
-from app.schema.tasks import TaskCreate, TaskUpdate, TaskResponse
+from app.schema.task import TaskCreate, TaskUpdate, TaskResponse
 
 app = FastAPI()
 
