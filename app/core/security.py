@@ -6,7 +6,7 @@ from jwt.exceptions import InvalidTokenError
 
 from pwdlib import PasswordHash
 
-password_hash = PasswordHash
+password_hash = PasswordHash.recommended()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -37,7 +37,7 @@ def decode_access_token(token: str) -> dict:
     decoded_jwt = jwt.decode(
         token,
         SECRET_KEY,
-        algorithm=[ALGORITHM],
+        algorithms=[ALGORITHM],
     )
 
     return decoded_jwt
@@ -47,5 +47,5 @@ def hash_password(password: str) -> str:
     return password_hash.hash(password)
 
 
-def hash_password(plain_password: str, hashed_password: str) -> bool:
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return password_hash.verify(plain_password, hashed_password)
