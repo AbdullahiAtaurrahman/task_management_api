@@ -22,8 +22,8 @@ class UserRepository:
 
     async def create_user(self, user_data: dict):
         user = User(**user_data)
-        self.db.add(user_data)
-        await self.db.execute()
+        self.db.add(user)
+        await self.db.commit()
         await self.db.refresh(user)
 
         return user
