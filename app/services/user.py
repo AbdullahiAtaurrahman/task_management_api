@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password, create_access_token
 
 from app.repositories.user import UserRepository
 
@@ -35,4 +35,27 @@ class UserService:
         data["hashed_password"] = hashed_password
         data.pop("password")
         user = await self.repository.create_user(data)
+        return user
+
+    async def login_user(self, email: str, password: str):
+        user = await self.repository.get_user_by_email(email)
+
+        if user is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="invalid email or password",
+            )
+        is_password_valid = verify_password(password, user.hashed_password)
+
+        user_token = create_access_token(
+            {
+                "sub": user.id,
+            }
+        )
+
+        if not is_password_valid:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="invalid email or password",
+            )
         return user
