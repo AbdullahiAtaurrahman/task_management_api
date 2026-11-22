@@ -47,15 +47,22 @@ class UserService:
             )
         is_password_valid = verify_password(password, user.hashed_password)
 
-        user_token = create_access_token(
-            {
-                "sub": user.id,
-            }
-        )
-
         if not is_password_valid:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="invalid email or password",
             )
-        return user
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Inactive user",
+            )
+
+        user_token = create_access_token(
+            {
+                "sub": str(user.id),
+            }
+        )
+
+        return {"access_token": user_token, "token_type": "bearer"}
