@@ -20,7 +20,7 @@ class UserService:
 
         if existing_email:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_409_CONFLICT,
                 detail="Email already registered",
             )
 
@@ -28,10 +28,9 @@ class UserService:
 
         if existing_username:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="username already taken",
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Username already taken",
             )
-
         hashed_password = hash_password(data["password"])
         data["hashed_password"] = hashed_password
         data.pop("password")

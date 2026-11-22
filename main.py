@@ -1,9 +1,12 @@
 from fastapi import FastAPI, HTTPException, status
-from app.schema.task import TaskCreate, TaskUpdate, TaskResponse
+
+from app.api.v1 import router
+
+from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
 
 app = FastAPI()
 
-tasks = []
+app.include_router(router.router)
 
 
 @app.get("/")
