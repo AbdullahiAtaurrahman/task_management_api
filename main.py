@@ -8,6 +8,8 @@ app = FastAPI()
 
 app.include_router(router.router)
 
+tasks = []
+
 
 @app.get("/")
 def root():

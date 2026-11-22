@@ -20,3 +20,17 @@ async def register_user(
     user = await service.create_user(user_data)
 
     return user
+
+
+@router.post("/login", response_model=Token, status_code=status.HTTP_202_OK)
+async def user_login(
+    service: UserService = Depends(get_user_service),
+    form: OAuth2PasswordRequestForm = Depends(),
+):
+
+    token = await service.login_user(
+        email=form.username,
+        password=form.password,
+    )
+
+    return token
