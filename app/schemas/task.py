@@ -1,6 +1,6 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class TaskPriority(str, Enum):
@@ -22,6 +22,18 @@ class TaskUpdate(BaseModel):
     description: str | None = None
     priority: TaskPriority | None = None
     completed: bool | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def reject_null_required_fields(cls, data):
+        if isinstance(data, dict):
+            required_fields = ["title", "priority", "completed"]
+
+            for field in required_fields:
+                if field in data and data[field] is None:
+                    raise ValueError(f"{field} cannot be null")
+
+        return data
 
 
 class TaskResponse(BaseModel):
