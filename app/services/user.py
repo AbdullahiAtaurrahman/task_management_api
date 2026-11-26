@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from app.core.security import hash_password, verify_password, create_access_token
 
 from app.repositories.user import UserRepository
@@ -37,7 +38,14 @@ class UserService:
         hashed_password = hash_password(data["password"])
         data["hashed_password"] = hashed_password
         data.pop("password")
-        user = await self.repository.create_user(data)
+        try:
+            user = await self.repository.create_user(data)
+        except IntegrityError:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Email or username already registered",
+            )
+
         return user
 
     async def login_user(self, email: str, password: str):
