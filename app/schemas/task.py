@@ -44,6 +44,7 @@ class TaskUpdate(BaseModel):
     description: str | None = None
     priority: TaskPriority | None = None
     completed: bool | None = None
+    due_date: datetime | None = None
 
     @model_validator(mode="before")
     @classmethod
