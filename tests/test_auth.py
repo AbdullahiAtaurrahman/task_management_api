@@ -136,7 +136,7 @@ async def test_login_success(client):
     response = await client.post(
         f"{BASE_URL}/login",
         data={
-            "username": user_data["username"],
+            "username": user_data["email"],
             "password": user_data["password"],
         },
     )
@@ -163,7 +163,7 @@ async def test_login_wrong_password(client):
     response = await client.post(
         f"{BASE_URL}/login",
         data={
-            "username": user_data["username"],
+            "username": user_data["email"],
             "password": "WrongPassword123",
         },
     )
@@ -178,7 +178,7 @@ async def test_login_unknown_user(client):
     response = await client.post(
         f"{BASE_URL}/login",
         data={
-            "username": user_data["username"],
+            "username": user_data["email"],
             "password": user_data["password"],
         },
     )

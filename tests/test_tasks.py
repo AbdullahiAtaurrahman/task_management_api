@@ -30,7 +30,7 @@ async def create_user_and_get_token(client):
     login_response = await client.post(
         f"{AUTH_URL}/login",
         data={
-            "username": user_data["username"],
+            "username": user_data["email"],
             "password": user_data["password"],
         },
     )
